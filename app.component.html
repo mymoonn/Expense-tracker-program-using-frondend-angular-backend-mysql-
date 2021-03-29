@@ -1,0 +1,54 @@
+<h1 class="cate-header">EXPENSE MANAGER</h1><br><br>
+
+<div class="main">
+    <div class="right">
+       <label for="date" >date</label>
+                    <b>Choose your date :</b> <input type="date" id="date"  
+                        placeholder="select Date" [(ngModel)]="udate"><br><br>
+                        <b>Choose your type :</b>  <input type="radio" value="income" [(ngModel)]="utype" onchange="incomeFunction()" >
+                        <label for="income">INCOME</label>
+                        <input type="radio" value="expense" [(ngModel)]="utype" onchange="expenseFunction()">
+                        <label for="expense">EXPENSE</label><br><br>
+  
+    <b>Enter your Description : </b><input type="text" placeholder="Description" [(ngModel)]="udesc"><br><br> 
+    <b>Enter your Amount : </b><input type="number" placeholder="Amount" [(ngModel)]="uamt"><br><br>
+               <button (click)="addItems()">ADD</button>
+
+       
+</div>
+<div class="left">
+
+    <table class="newcss">
+
+        <tr>
+            <th>S.NO</th>
+            <th>DATE</th>
+            <th>description</th>
+            <th>income</th>
+            <th>expense</th>
+            <th>action</th>
+        </tr>
+        <tr *ngFor="let user of exIncome;let i = index">
+            <td>{{i+1}}</td>
+
+            <td class="date">{{user.date}}</td>
+            <td>{{user.description}}</td>
+            <td>{{user.type=='income'?user.amount:''}}</td>
+            <td>{{user.type=='expense'?user.amount:''}}</td>
+            <td><button (click)="deleteRow(i)">delete</button>
+                <button (click)="editRow()">edit</button>
+
+            </td>
+        </tr>
+    </table>
+    <div>
+        <h1 class="cate-header">THANK YOU</h1>
+    </div>
+</div>
+
+<br>
+<div>
+    <h1 class="result"> Income total : {{getTotalIncome() }}</h1>
+    <h1 class="result"> Expense total : {{getTotalExpense()}}</h1>
+    <h1 class="result"> Balance is : {{getBalance()}}</h1>
+</div>
