@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { userInfo } from 'node:os';
 import { AppService } from './api.service';
 
 
@@ -22,7 +23,8 @@ export class AppComponent implements OnInit {
   totalIncome: any;
   totalExpense: any;
   totalBalance: any;
-
+  id: any;
+  add = true;
 
   constructor(private api: AppService) {
 
@@ -38,26 +40,12 @@ export class AppComponent implements OnInit {
     this.expense = true;
     this.income = false;
   }
+  
+  
 
   addItems(): any {
-    if (!this.udate) {
-      alert("please enter valid date");
-      return;
-    }
-    if (!this.utype) {
-      alert("please enter valid type");
-      return;
-    }
-    if (!this.udesc) {
-      alert("please enter valid decription");
-      return;
-    }
-    if (!this.uamt) {
-      alert("please enter valid amount");
-      return;
-    }
-
-
+      
+  
     let f = {
       date: this.udate,
       type: this.utype,
@@ -66,32 +54,51 @@ export class AppComponent implements OnInit {
 
     };
 
+    if(this.add==true) {
+      if (!this.udate) {
+        alert("please enter valid date");
+        return;
+      }
+      if (!this.utype) {
+        alert("please enter valid type");
+        return;
+      }
+      if (!this.udesc) {
+        alert("please enter valid decription");
+        return;
+      }
+      if (!this.uamt) {
+        alert("please enter valid amount");
+        return;
+      }
+  
 
-    this.api.post('http://localhost/myinsert.php',
-      f).then((x: any) => {
-        this.loadData();
+      this.api.post('http://localhost/myinsert.php',
+        f).then((x: any) => {
+          this.loadData();
+  
+        }).catch((x: any) => {
+          console.error('Error is', x);
+        });
+      this.api.post(`http://localhost/myupdate.php`,
+        { date: this.udate } && { type: this.utype } && { description: this.udesc } && { amount: this.uamt }).then((x: any) => {
+          console.log('Item Saved', x);
+          this.loadData();
+        }).catch((x: any) => {
+          console.error('Error is', x);
+        });
+      // this.exIncome.push(f);
+      this.api.post('http://localhost/mydel.php',
+        f).then((x: any) => {
+          this.loadData();
+        }).catch((x: any) => {
+          console.error('Error is', x);
+        });
+    } else {
+      this.update();
 
-      }).catch((x: any) => {
-        console.error('Error is', x);
-      });
-    this.exIncome.push(f);
+    }
 
-
-
-
-    console.log(this.exIncome)
-    this.api.post('http://localhost/myupdate.php',
-      f).then((x: any) => {
-        this.loadData();
-      }).catch((x: any) => {
-        console.error('Error is', x);
-      });
-    this.api.post('http://localhost/mydel.php',
-      f).then((x: any) => {
-        this.loadData();
-      }).catch((x: any) => {
-        console.error('Error is', x);
-      });
     this.api.post('http://localhost/load.php',
       f).then((x: any) => {
         this.loadData();
@@ -123,12 +130,14 @@ export class AppComponent implements OnInit {
 
 
 
-  deleteRow(i: any) {
-    let delet = this.exIncome[i];
-    this.exIncome.splice(i, 1);
+  deleteRow(id: any) {
+
     this.api.post(`http://localhost/mydel.php`,
-      {}).then((x: any) => {
+      {
+        id: id
+      }).then((x: any) => {
         console.log('Item Saved', x);
+        this.loadData();
       }).catch((x: any) => {
         console.error('Error is', x);
       });
@@ -156,13 +165,39 @@ export class AppComponent implements OnInit {
       });
   }
 
-  editRow() {
+  editRow(editedline: any) {
+    // console.log('Editing row ', editedline);
+    this.uamt = editedline.amount;
+    this.udesc = editedline.description;
+    this.utype = editedline.type;
+    this.udate = editedline.date;
+    this.id = editedline.id;
+    this.add = false;
+   
+
+  }
+
+  update() {
+    this.add = true;
+    this.add = false;
+    let updatedatas = {
+      date: this.udate,
+      type: this.utype,
+      description: this.udesc,
+      amount: this.uamt,
+      id: this.id
+    };
+
+
     this.api.post(`http://localhost/myupdate.php`,
-      { date: this.udate } && { type: this.utype } && { description: this.udesc } && { amount: this.uamt }).then((x: any) => {
+      updatedatas).then((x: any) => {
         console.log('Item Saved', x);
+        this.loadData();
       }).catch((x: any) => {
         console.error('Error is', x);
-      });
+      });  
+      this.add = true;
+
   }
   ngOnInit(): void {
 

@@ -2,7 +2,7 @@
 
 <div class="main">
     <div class="right">
-       <label for="date" >date</label>
+       
                     <b>Choose your date :</b> <input type="date" id="date"  
                         placeholder="select Date" [(ngModel)]="udate"><br><br>
                         <b>Choose your type :</b>  <input type="radio" value="income" [(ngModel)]="utype" onchange="incomeFunction()" >
@@ -12,8 +12,9 @@
   
     <b>Enter your Description : </b><input type="text" placeholder="Description" [(ngModel)]="udesc"><br><br> 
     <b>Enter your Amount : </b><input type="number" placeholder="Amount" [(ngModel)]="uamt"><br><br>
-               <button (click)="addItems()">ADD</button>
-
+    <!-- <button (click)="update()" onchange="update()">update</button> -->
+               <button (click)="addItems()" onchange ="addItems()">{{add === true ? 'add' : 'update'}}</button>
+               
        
 </div>
 <div class="left">
@@ -35,8 +36,8 @@
             <td>{{user.description}}</td>
             <td>{{user.type=='income'?user.amount:''}}</td>
             <td>{{user.type=='expense'?user.amount:''}}</td>
-            <td><button (click)="deleteRow(i)">delete</button>
-                <button (click)="editRow()">edit</button>
+            <td><button (click)="deleteRow(user.id)">delete</button>
+                <button (click)="editRow(user)">edit</button>
 
             </td>
         </tr>
